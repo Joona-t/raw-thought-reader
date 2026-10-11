@@ -2,8 +2,12 @@
 const $ = id => document.getElementById(id);
 const STORE = 'raw-thought-reader-v1';
 const HOME_TITLE = 'Raw Thought — Aaron Swartz, 1986–2013';
-const WAYBACK = 'https://web.archive.org/web/2013/';
 const ORIGINAL_HOSTS = new Set(['aaronsw.com', 'www.aaronsw.com']);
+// URLs that an audit found still live and still pointing at the right thing.
+// Every other outbound link is sent to the Wayback Machine at the post's own date.
+let trustedLinks = new Set();
+// Links into the archive itself never need rerouting.
+const ALWAYS_DIRECT = ['https://github.com/joshleitzel/rawthought/', 'https://web.archive.org/', 'https://archive.org/'];
 const PAGE_SIZE = 30;
 
 // A short reading list shown above the archive. Missing IDs are skipped quietly.
@@ -60,7 +64,6 @@ function el(tag, className, text) {
   if (text !== undefined) node.textContent = text;
   return node;
 }
-function waybackUrl(url) { return WAYBACK + url; }
 
 /* ---------- saved / resume ---------- */
 
@@ -174,15 +177,21 @@ function navigationLink(id, post) {
   else a.removeAttribute('href');
 }
 
-// Links into the expired aaronsw.com domain are sent to the Wayback Machine instead.
-function rerouteOriginalLinks(container) {
+// Outbound links are routed to the Wayback Machine unless the link audit found them
+// still live and correct. Dead, parked and hijacked domains never get visited directly.
+function waybackAt(url, date) { return 'https://web.archive.org/web/' + date.replace(/-/g, '') + '/' + url; }
+function rerouteLinks(container, date) {
   for (const a of container.querySelectorAll('a[href]')) {
+    const raw = a.getAttribute('href');
+    if (raw.startsWith('#') || raw.startsWith('mailto:')) continue;
     let url;
-    try { url = new URL(a.getAttribute('href'), location.href); } catch { continue; }
-    if (ORIGINAL_HOSTS.has(url.hostname)) {
-      a.href = waybackUrl(url.href);
-      a.title = 'Archived copy on the Wayback Machine';
-    }
+    try { url = new URL(raw, location.href); } catch { continue; }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') continue;
+    if (ALWAYS_DIRECT.some(prefix => url.href.startsWith(prefix))) continue;
+    if (!ORIGINAL_HOSTS.has(url.hostname) && trustedLinks.has(url.href)) continue;
+    a.href = waybackAt(url.href, date);
+    a.title = 'Archived copy on the Wayback Machine (the original link no longer works or has changed hands)';
+    a.classList.add('archived-link');
   }
 }
 
@@ -210,9 +219,9 @@ function route() {
     $('post-title').textContent = post.title;
     // Only the build-time allowlisted, escaped archive HTML is used here.
     $('post-body').innerHTML = post.html;
-    rerouteOriginalLinks($('post-body'));
+    rerouteLinks($('post-body'), post.date);
     $('post-source').href = post.source;
-    $('post-original').href = waybackUrl(post.original);
+    $('post-original').href = waybackAt(post.original, post.date);
     navigationLink('previous-post', posts[index - 1]); navigationLink('next-post', posts[index + 1]);
     updateSaved(); document.title = post.title + ' — Raw Thought';
     window.scrollTo({top: 0, behavior: 'instant'}); $('post-title').focus({preventScroll: true});
@@ -234,7 +243,13 @@ function route() {
 async function load() {
   $('load-error').hidden = true;
   try {
-    const response = await fetch('./posts.json', {credentials: 'omit'});
+    const [response, audit] = await Promise.all([
+      fetch('./posts.json', {credentials: 'omit'}),
+      fetch('./link-audit.json', {credentials: 'omit'}).catch(() => null)
+    ]);
+    if (audit && audit.ok) {
+      try { const list = (await audit.json()).trusted; if (Array.isArray(list)) trustedLinks = new Set(list); } catch { /* Without the audit every link goes to the archive. */ }
+    }
     if (!response.ok) throw new Error('Archive unavailable');
     const data = await response.json();
     if (!Array.isArray(data.posts) || !data.posts.length) throw new Error('Archive invalid');

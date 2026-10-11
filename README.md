@@ -23,7 +23,23 @@ Pages:
 - **About Aaron**: a short biography and timeline.
 - **Credits**: how the archive survived and what this site does and does not claim.
 
-"Original post" links, and any in-text links into aaronsw.com, are routed through the Internet Archive's Wayback Machine rather than the expired domain.
+"Original post" links go to the Internet Archive's Wayback Machine rather than the expired domain.
+
+## Link audit
+
+Every outbound link in the posts was audited on October 11, 2026: an HTTP crawl of all 1,308 distinct links, followed by a review of each live page by a swarm of Claude Haiku agents comparing the page with the link text and context. Results:
+
+| Verdict | Links |
+|---|---|
+| Dead (4xx, 5xx, no DNS, timeout) | 683 |
+| Still live and correct | 278 |
+| Moved to a new home legitimately | 101 |
+| aaronsw.com itself (expired, parked) | 98 |
+| Soft 404 or page removed | 66 |
+| Hijacked: parked, for sale, or ad spam | 34 |
+| Could not be judged | 48 |
+
+`link-audit.json` lists the links judged live and correct. At render time the reader sends every other outbound link to the Wayback Machine, dated to the post's own date, so a reader never lands on a hijacked domain. Those links carry a small arrow marker. If `link-audit.json` fails to load, every link goes to the archive.
 
 Run any static server in this directory to preview, for example:
 
