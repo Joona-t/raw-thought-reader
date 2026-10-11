@@ -8,6 +8,10 @@ const ORIGINAL_HOSTS = new Set(['aaronsw.com', 'www.aaronsw.com']);
 let trustedLinks = new Set();
 // Links into the archive itself never need rerouting.
 const ALWAYS_DIRECT = ['https://github.com/joshleitzel/rawthought/', 'https://web.archive.org/', 'https://archive.org/'];
+// Images from the archive are served from this site's own copy (images/), never fetched from GitHub.
+// The manifest maps the archive path of each image to its local file and pixel size.
+const ARCHIVE_SOURCE = 'https://github.com/joshleitzel/rawthought/blob/b01e000f42abbac7b616bc8f8bd56522d1f4c46a/';
+let archivedImages = new Map();
 const PAGE_SIZE = 30;
 
 // A short reading list shown above the archive. Missing IDs are skipped quietly.
@@ -15,7 +19,7 @@ const START_HERE = [
   {id: '2005-05-15-whaaaa', note: 'The first surviving post, typed by hand into a web page after a disk crash erased the years before it.'},
   {id: '2005-12-28-productivity', note: 'The famous one. Why willpower is the wrong tool, and what to do instead.'},
   {id: '2010-03-14-theoryofchange', note: 'Start from the world you want and work backwards. His whole approach to politics in five minutes.'},
-  {id: '2012-08-18-dweck', note: 'The opening of Raw Nerve: on believing that you can actually change.'},
+  {id: '2012-08-18-dweck', note: 'From Raw Nerve: on believing that you can actually change.'},
   {id: '2012-09-01-dalio', note: 'From Raw Nerve: the things that hurt to look at are usually the things worth looking at.'},
   {id: '2012-09-25-nummi', note: 'From Raw Nerve: when something goes wrong, fix the system, not the person.'}
 ];
@@ -177,6 +181,57 @@ function navigationLink(id, post) {
   else a.removeAttribute('href');
 }
 
+// The build leaves every image as a link to its archived file. When this site holds a copy of
+// that file, show the picture itself, with the source link kept under it. A link that wraps the
+// image in the original post (a.image-target) becomes the link on the picture.
+function embedImages(container) {
+  for (const link of container.querySelectorAll('a.archived-image[href]')) {
+    const href = link.getAttribute('href');
+    if (!href.startsWith(ARCHIVE_SOURCE)) continue;
+    const entry = archivedImages.get(href.slice(ARCHIVE_SOURCE.length));
+    if (!entry || !/^images\/[\w-][\w.-]*\/[\w-][\w.-]*\.jpg$/.test(entry.file)) continue;
+    const label = link.textContent.replace(/\s*↗\s*$/, '').trim();
+    const described = label && label !== 'View archived image';
+    const img = el('img');
+    img.src = entry.file; img.alt = described ? label : 'Image from the original post';
+    img.width = entry.width; img.height = entry.height; img.loading = 'lazy'; img.decoding = 'async';
+    let target = link.nextElementSibling;
+    if (!(target && target.classList.contains('image-target') && target.hasAttribute('href'))) target = null;
+    // The picture links to the page it linked to in the original post, if there was one.
+    // Without one it stands alone: the caption already links to the archived file.
+    let picture = img;
+    if (target) {
+      picture = el('a'); picture.rel = 'noopener noreferrer';
+      picture.href = target.getAttribute('href'); picture.title = 'Linked page from the original post';
+      picture.append(img);
+    }
+    const arrow = () => { const a = el('span', null, ' ↗'); a.setAttribute('aria-hidden', 'true'); return a; };
+    const sourceLink = (text) => { const a = el('a', null, text); a.href = href; a.rel = 'noopener noreferrer'; a.append(arrow()); return a; };
+    const parent = link.parentElement;
+    const block = parent && parent.matches('p.archived-image') &&
+      [...parent.childNodes].every(n => n === link || n === target || (n.nodeType === Node.TEXT_NODE && !n.textContent.trim()));
+    if (block) {
+      const figure = el('figure', 'archived-figure');
+      const caption = el('figcaption');
+      if (described) caption.append(el('span', null, label));
+      caption.append(sourceLink('Archived image file'));
+      if (target) { const page = el('a', null, 'Linked page'); page.href = target.getAttribute('href'); page.rel = 'noopener noreferrer'; page.append(arrow()); caption.append(page); }
+      figure.append(picture, caption);
+      parent.replaceWith(figure);
+    } else {
+      // Inline: a picture inside running text (a book cover beside a paragraph, two portraits in a row).
+      const wrapper = el('span', 'archived-inline');
+      const source = sourceLink('Archived file'); source.className = 'archived-inline-source';
+      wrapper.append(picture, source);
+      if (target) target.remove();
+      const hasText = parent && [...parent.childNodes].some(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+      if (hasText) wrapper.classList.add('archived-float');
+      else if (parent && parent.tagName === 'P') parent.classList.add('archived-row');
+      link.replaceWith(wrapper);
+    }
+  }
+}
+
 // Outbound links are routed to the Wayback Machine unless the link audit found them
 // still live and correct. Dead, parked and hijacked domains never get visited directly.
 function waybackAt(url, date) { return 'https://web.archive.org/web/' + date.replace(/-/g, '') + '/' + url; }
@@ -191,7 +246,8 @@ function rerouteLinks(container, date) {
     if (!ORIGINAL_HOSTS.has(url.hostname) && trustedLinks.has(url.href)) continue;
     a.href = waybackAt(url.href, date);
     a.title = 'Archived copy on the Wayback Machine (the original link no longer works or has changed hands)';
-    a.classList.add('archived-link');
+    // The arrow marker belongs on text links; a picture that links out gets the title only.
+    if (!a.querySelector('img')) a.classList.add('archived-link');
   }
 }
 
@@ -219,6 +275,7 @@ function route() {
     $('post-title').textContent = post.title;
     // Only the build-time allowlisted, escaped archive HTML is used here.
     $('post-body').innerHTML = post.html;
+    embedImages($('post-body'));
     rerouteLinks($('post-body'), post.date);
     $('post-source').href = post.source;
     $('post-original').href = waybackAt(post.original, post.date);
@@ -233,7 +290,7 @@ function route() {
     if (id) $('result-count').textContent = 'That post was not found. Browse the archive below.';
     const target = hash.length > 1 && hash !== '#archive' ? document.getElementById(hash.slice(1)) : null;
     if (target && target.closest('#archive-view')) target.scrollIntoView();
-    else if (wasReading) window.scrollTo({top: archiveScroll, behavior: 'instant'});
+    else if (wasReading) { window.scrollTo({top: archiveScroll, behavior: 'instant'}); $('archive-title').focus({preventScroll: true}); }
   }
   updateProgress();
 }
@@ -243,12 +300,19 @@ function route() {
 async function load() {
   $('load-error').hidden = true;
   try {
-    const [response, audit] = await Promise.all([
+    const [response, audit, manifest] = await Promise.all([
       fetch('./posts.json', {credentials: 'omit'}),
-      fetch('./link-audit.json', {credentials: 'omit'}).catch(() => null)
+      fetch('./link-audit.json', {credentials: 'omit'}).catch(() => null),
+      fetch('./images/manifest.json', {credentials: 'omit'}).catch(() => null)
     ]);
     if (audit && audit.ok) {
       try { const list = (await audit.json()).trusted; if (Array.isArray(list)) trustedLinks = new Set(list); } catch { /* Without the audit every link goes to the archive. */ }
+    }
+    if (manifest && manifest.ok) {
+      try {
+        const images = (await manifest.json()).images;
+        if (images && typeof images === 'object') archivedImages = new Map(Object.entries(images).filter(([, v]) => v && typeof v.file === 'string' && Number.isInteger(v.width) && Number.isInteger(v.height)));
+      } catch { /* Without the manifest images stay as links to the archive. */ }
     }
     if (!response.ok) throw new Error('Archive unavailable');
     const data = await response.json();
@@ -273,7 +337,7 @@ async function load() {
 
 $('search').addEventListener('input', filterPosts);
 $('saved-filter').addEventListener('click', () => { savedOnly = !savedOnly; filterPosts(); });
-$('clear-filters').addEventListener('click', () => { selectedYear = 'all'; savedOnly = false; $('search').value = ''; renderYears(); filterPosts(); });
+$('clear-filters').addEventListener('click', () => { selectedYear = 'all'; savedOnly = false; $('search').value = ''; renderYears(); filterPosts(); $('search').focus(); });
 $('load-more').addEventListener('click', () => {
   const before = shown; shown += PAGE_SIZE; renderList();
   const next = $('posts-list').children[before];
