@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="An independent chronological reader for Aaron Swartz’s Raw Thought blog. Explore 449 archived posts from 2005–2012.">
+  <meta name="theme-color" content="#233c32">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Raw Thought — Aaron Swartz, in chronological order</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="wordmark" href="#archive" aria-label="Raw Thought archive"><span class="mark">rt.</span><span>RAW THOUGHT</span></a>
+    <nav aria-label="Main navigation"><a href="#archive">The archive</a><a href="#about">About this collection <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main id="main">
+    <section id="archive-view">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy"><p class="eyebrow"><span class="small-rule"></span> THE WRITING OF AARON SWARTZ</p><h1 id="hero-title">A mind in<br><em>motion.</em></h1><p class="hero-description">Technology, politics, books, and the questions in between. Read <i>Raw Thought</i> as it unfolded, one post at a time.</p><div class="hero-actions"><a id="start-reading" class="button" href="#archive-list">Start at the beginning <span aria-hidden="true">↗</span></a><a id="resume-reading" href="#archive-list" hidden>Continue reading →</a></div></div>
+        <div class="hero-art" aria-hidden="true"><span class="art-label">RAW THOUGHT<br>AN OPEN NOTEBOOK</span><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><span class="art-dot"></span><span class="art-year">2005<br><span>—</span><br>2012</span><span class="art-caption">IDEAS, IN THEIR OWN TIME.</span></div>
+      </section>
+      <div class="collection-bar"><span><strong>449</strong> archived posts</span><span>2005—2012</span><span>Oldest first. Always.</span></div>
+      <section class="archive-layout" id="archive-list" aria-labelledby="archive-title">
+        <aside class="archive-sidebar"><p class="eyebrow">BROWSE BY YEAR</p><nav id="years" aria-label="Filter posts by year"></nav><div class="sidebar-note"><span class="note-line"></span><p>Follow a thought.<br>See where it leads.</p><span>An independent reading edition.</span></div></aside>
+        <div class="archive-main"><div class="archive-heading"><div><p class="eyebrow">THE COLLECTION</p><h2 id="archive-title">The complete archive<span class="accent">.</span></h2></div><span class="order-note">CHRONOLOGICAL ↓</span></div>
+          <div class="search-row"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search titles, ideas, or phrases…" autocomplete="off" aria-label="Search post titles and full text"><kbd aria-hidden="true">/</kbd></label><button id="saved-filter" type="button" aria-pressed="false">Saved <span id="saved-count">0</span></button></div>
+          <div class="results-info"><p id="result-count" role="status" aria-live="polite">Loading the archive…</p><button id="clear-filters" type="button" hidden>Clear filters</button></div>
+          <div id="posts-list"></div><div id="empty-state" class="empty-state" hidden><h3>No posts found.</h3><p>Try another phrase or choose a different year.</p></div>
+          <button id="load-more" class="load-more" type="button" hidden>Show more posts <span aria-hidden="true">↓</span></button>
+          <div id="load-error" class="empty-state" hidden><h3>The archive couldn’t load.</h3><p>Check your connection and reload this page.</p><button id="retry-load" type="button">Try again</button></div>
+        </div>
+      </section>
+      <section id="about" class="about"><p class="eyebrow">ABOUT THIS EDITION</p><div><h2>A place to read,<br>and to keep reading.</h2><p>This independent reader presents Aaron Swartz’s writing from the <a href="https://github.com/joshleitzel/rawthought" rel="noopener noreferrer">Raw Thought archive preserved by Josh Leitzel</a>. These 449 posts span May 2005 to November 2012; this is the collection in that archive, not every post Aaron ever wrote.</p><p>The posts run from oldest to newest. Posts on the same day use archive filename order because publication times are not included. Original source links accompany every entry. Old scripts, subscription forms, and embedded plugins have been removed; archived images are available through links.</p><p>Your saved posts and last-opened article stay in this browser. No account, analytics, or third-party scripts. This site is an independent tribute, unaffiliated with Aaron’s estate or the original archive maintainer.</p></div></section>
+    </section>
+    <section id="reader-view" hidden aria-labelledby="post-title">
+      <div class="reader-toolbar"><a href="#archive" id="back-to-archive">← Back to archive</a><span id="reader-position"></span><button id="save-post" type="button" aria-pressed="false">Save post</button></div>
+      <article class="reader"><header class="article-header"><p class="eyebrow" id="post-meta"></p><h1 id="post-title" tabindex="-1"></h1><p class="byline">By Aaron Swartz <span>·</span> Raw Thought</p></header><div id="post-body" class="prose"></div><div class="source-note">Preserved from the original archive. <a id="post-source" rel="noopener noreferrer">View archived source ↗</a><a id="post-original" rel="noopener noreferrer">Original post ↗</a></div><nav class="post-navigation" aria-label="Chronological post navigation"><a id="previous-post"><span>← PREVIOUS POST</span><strong></strong></a><a id="next-post"><span>NEXT POST →</span><strong></strong></a></nav></article>
+    </section>
+  </main>
+  <footer><a class="footer-logo" href="#archive">Raw Thought<span>.</span></a><p>The writing of Aaron Swartz.<br>An independent archive reader.</p><a href="https://github.com/joshleitzel/rawthought" rel="noopener noreferrer">Credit to the original archive ↗</a></footer>
+  <noscript><p class="noscript">This reader needs JavaScript to browse the collection. You can also <a href="https://github.com/joshleitzel/rawthought/tree/b01e000f42abbac7b616bc8f8bd56522d1f4c46a/posts">read the posts on GitHub</a>.</p></noscript>
+</body>
+</html>
