@@ -39,22 +39,30 @@ Every outbound link in the posts was audited on October 11, 2026: an HTTP crawl 
 | Hijacked: parked, for sale, or ad spam | 34 |
 | Could not be judged | 48 |
 
-`link-audit.json` lists the links judged live and correct. At render time the reader sends every other outbound link to the Wayback Machine, dated to the post's own date, so a reader never lands on a hijacked domain. Those links carry a small arrow marker. If `link-audit.json` fails to load, every link goes to the archive.
+The crawl ran against the audited archive before the reader's own image links were separated out, which is why it counts 1,308 links where the shipped `posts.json` holds 1,296 distinct outbound links today.
+
+`link-audit.json` lists the 379 links judged live and correct or legitimately moved. At render time the reader sends every other outbound link to the Wayback Machine, dated to the post's own date, so a reader never lands on a hijacked domain. Those links carry a small arrow marker. If `link-audit.json` fails to load, every link goes to the archive.
 
 Run any static server in this directory to preview, for example:
 
 ```bash
-py -m http.server 8765
+python3 -m http.server 8765
 ```
+
+(`py -m http.server 8765` on Windows.)
 
 ## Content preparation
 
-`posts.json` was generated from a previously audited local copy of the archive. This is a new reader repository, not a fork. It contains no original Ruby build scripts, PDFs, EPUBs or MOBI files. `build_content.py` can reproduce the reading data from that audit archive when Python and lxml are available. It does not download anything. `verify_content.py` checks chronological completeness and the content security boundary.
+`posts.json` was generated from a previously audited local copy of the archive. This is a new reader repository, not a fork. It contains no original Ruby build scripts, PDFs, EPUBs or MOBI files. `build_content.py` can reproduce the reading data from that audit archive when Python and lxml are available; it expects the archive zip at `../rawthought-security-audit/source.zip` (the GitHub zipball of the pinned commit). It does not download anything. `verify_content.py` checks chronological completeness, the content security boundary, valid nesting of the rebuilt markup, and that every image in the manifest exists on disk and is referenced by a post.
 
-Archived HTML is rebuilt with an allowlist of passive elements and HTTP, HTTPS, mailto or known in-reader links. Scripts, event handlers, forms, styles and plugins are removed. Images are represented by links to their archived originals. The page's Content Security Policy disallows external script execution, plugins and forms. External links remain historical references and have not all been assessed.
+Archived HTML is rebuilt with an allowlist of passive elements and HTTP, HTTPS, mailto or known in-reader links. Scripts, event handlers, forms, styles and plugins are removed. The page's Content Security Policy disallows external script execution, plugins and forms, and only allows images from this site itself.
+
+## Images
+
+The archive holds 34 images across 27 posts; another 6 image references in 4 posts point at files the archive never captured. `build_content.py` copies each surviving file unchanged into `images/<post>/` and records its pixel size in `images/manifest.json`. In the post data every image stays a plain link to its file in the archive. At render time the reader looks each link up in the manifest and, when the site holds the file, shows the picture in place with the archived-file link kept beneath it (and the page the image linked to, where the original post wrapped it in a link). Images are never fetched from GitHub, and if the manifest fails to load the links simply remain links. Missing images are noted in the text as unavailable.
 
 One post, `2012-04-18-parpolity`, has a garbled title and stray question marks in the text. That is how it appeared on the original site, and the archive reproduces it faithfully.
 
 ## Attribution
 
-Writing by Aaron Swartz. Original archive compiled by Josh Leitzel and its contributors. Every article links to its archived source and to a Wayback Machine copy of the original page. This site is an independent tribute. It does not claim ownership of the writing and is not affiliated with Aaron's family or estate, or with the archive's maintainer. No new license is asserted over archived material.
+Writing by Aaron Swartz. Original archive compiled by Josh Leitzel and its contributors. Every article links to its archived source and to a Wayback Machine copy of the original page. This site is an independent tribute. It does not claim ownership of the writing and is not affiliated with Aaron's family or estate, or with the archive's maintainer. No new license is asserted over archived material. The archive repository itself carries no license file; if you hold rights in this writing and want something changed or removed, open an issue on this repository.
