@@ -323,8 +323,6 @@ async function load() {
     if (!valid.has(lastRead)) lastRead = null;
     $('stat-posts').textContent = posts.length;
     $('stat-hours').textContent = Math.round(posts.reduce((sum, p) => sum + p.minutes, 0) / 60);
-    const quoted = posts.find(p => p.id === $('quote-source').hash.slice(6));
-    if (quoted) $('quote-source').textContent = `“${quoted.title}”, ${dateLabel(quoted.date, true)}`;
     renderStartHere(); renderYears(); filterPosts();
     $('start-reading').href = '#post=' + posts[0].id;
     route();
