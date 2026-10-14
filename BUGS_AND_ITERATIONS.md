@@ -2,6 +2,12 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## ITER-006 — 2026-10-14 — Closing quote mark on the homepage plaque
+
+**What hurt:** The plaque had a big decorative opening “ but no closing mark, so the quote looked unbalanced.
+
+**Fix:** `.plaque blockquote::after` draws a matching ” bottom-right (beside the dates on mobile). Also added `?v=2` to the `style.css` / `app.js` links: the browser kept serving the cached stylesheet during the check, and returning visitors would have too. Bump `v` whenever either file changes.
+
 ## ITER-005 — 2026-10-14 — New homepage quote
 
 Homepage plaque now shows “Be curious. Read widely. Try new things. What people call intelligence just boils down to curiosity.” (Joona's pick). The quote isn't in the Raw Thought archive (searched all 449 posts), so the caption is now a plain “— Aaron Swartz” with no post link, and the `app.js` code that relabelled `#quote-source` from the linked post was removed.

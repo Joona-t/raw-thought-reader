@@ -154,10 +154,11 @@ main { max-width: var(--max); margin: 0 auto; }
   min-height: 360px;
   display: flex; flex-direction: column; justify-content: center;
 }
-.plaque::before {
+.plaque::before, .plaque blockquote::after {
   content: "“"; position: absolute; top: -4px; left: 28px;
   font-family: var(--serif); font-size: 110px; line-height: 1; color: var(--accent); opacity: .4;
 }
+.plaque blockquote::after { content: "”"; top: auto; left: auto; right: 28px; bottom: -6px; }
 .plaque::after {
   content: ""; position: absolute; inset: 7px; border: 1px solid var(--line); pointer-events: none;
 }
@@ -422,7 +423,8 @@ footer {
   .hero-description { font-size: 15.5px; }
   .button { gap: 18px; padding: 14px 18px; }
   .plaque { padding: 44px 24px 36px; min-height: 0; }
-  .plaque::before { font-size: 90px; left: 18px; }
+  .plaque::before, .plaque blockquote::after { font-size: 90px; left: 18px; }
+  .plaque blockquote::after { left: auto; right: 18px; bottom: -18px; }
   .plaque blockquote p { font-size: 23px; }
   .plaque-years { position: static; display: block; margin-top: 20px; }
 
