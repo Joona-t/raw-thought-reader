@@ -2,6 +2,10 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## ITER-007 — 2026-10-14 — Plaque: no quote marks, larger attribution
+
+Joona's call: the decorative “ ” marks (ITER-006) weren't aesthetic. Both removed; top padding reduced to match. The "— Aaron Swartz" line moved to the serif at 19px in `--ink-soft` so it reads as part of the plaque rather than a footnote. Assets bumped to `?v=4`.
+
 ## BUG-002 — 2026-10-14 — "The archive couldn't load" with no reason shown
 
 **What hurt:** Joona saw the archive error on the live site right after the ITER-006 deploy. Not reproducible afterwards; the most likely cause is loading during the ~30 s GitHub Pages rebuild window (posts.json 404s) or a dropped download of the 4.7 MB (1 MB gzipped) archive. The `catch` swallowed the error, so there was nothing to go on.
