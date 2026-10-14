@@ -150,15 +150,10 @@ main { max-width: var(--max); margin: 0 auto; }
   margin: 0; position: relative;
   border: 1px solid var(--line-strong);
   background: var(--paper-deep);
-  padding: 64px 44px 44px;
+  padding: 52px 44px 44px;
   min-height: 360px;
   display: flex; flex-direction: column; justify-content: center;
 }
-.plaque::before, .plaque blockquote::after {
-  content: "“"; position: absolute; top: -4px; left: 28px;
-  font-family: var(--serif); font-size: 110px; line-height: 1; color: var(--accent); opacity: .4;
-}
-.plaque blockquote::after { content: "”"; top: auto; left: auto; right: 28px; bottom: -6px; }
 .plaque::after {
   content: ""; position: absolute; inset: 7px; border: 1px solid var(--line); pointer-events: none;
 }
@@ -166,7 +161,7 @@ main { max-width: var(--max); margin: 0 auto; }
 .plaque blockquote p {
   font-family: var(--serif); font-size: clamp(24px, 2.4vw, 31px); line-height: 1.32; letter-spacing: -.01em; margin: 0 0 24px;
 }
-.plaque figcaption { font-size: 12px; letter-spacing: .06em; color: var(--muted); }
+.plaque figcaption { font-family: var(--serif); font-size: 19px; letter-spacing: .02em; color: var(--ink-soft); }
 .plaque figcaption a { color: var(--ink-soft); }
 .plaque figcaption a:hover { color: var(--accent); }
 .plaque-years {
@@ -423,8 +418,6 @@ footer {
   .hero-description { font-size: 15.5px; }
   .button { gap: 18px; padding: 14px 18px; }
   .plaque { padding: 44px 24px 36px; min-height: 0; }
-  .plaque::before, .plaque blockquote::after { font-size: 90px; left: 18px; }
-  .plaque blockquote::after { left: auto; right: 18px; bottom: -18px; }
   .plaque blockquote p { font-size: 23px; }
   .plaque-years { position: static; display: block; margin-top: 20px; }
 
