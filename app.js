@@ -297,11 +297,13 @@ function route() {
 
 /* ---------- load ---------- */
 
-async function load() {
+async function load(event) {
   $('load-error').hidden = true;
+  // A retry bypasses the HTTP cache so a half-downloaded or stale archive isn't served again.
+  const cache = event && event.type === 'click' ? 'reload' : 'default';
   try {
     const [response, audit, manifest] = await Promise.all([
-      fetch('./posts.json', {credentials: 'omit'}),
+      fetch('./posts.json', {credentials: 'omit', cache}),
       fetch('./link-audit.json', {credentials: 'omit'}).catch(() => null),
       fetch('./images/manifest.json', {credentials: 'omit'}).catch(() => null)
     ]);
@@ -314,9 +316,9 @@ async function load() {
         if (images && typeof images === 'object') archivedImages = new Map(Object.entries(images).filter(([, v]) => v && typeof v.file === 'string' && Number.isInteger(v.width) && Number.isInteger(v.height)));
       } catch { /* Without the manifest images stay as links to the archive. */ }
     }
-    if (!response.ok) throw new Error('Archive unavailable');
+    if (!response.ok) throw new Error(`posts.json returned HTTP ${response.status}`);
     const data = await response.json();
-    if (!Array.isArray(data.posts) || !data.posts.length) throw new Error('Archive invalid');
+    if (!Array.isArray(data.posts) || !data.posts.length) throw new Error('posts.json has no posts');
     posts = data.posts;
     const valid = new Set(posts.map(p => p.id));
     saved = new Set([...saved].filter(id => valid.has(id)));
@@ -326,7 +328,9 @@ async function load() {
     renderStartHere(); renderYears(); filterPosts();
     $('start-reading').href = '#post=' + posts[0].id;
     route();
-  } catch {
+  } catch (err) {
+    console.error('Archive load failed:', err);
+    $('load-error-detail').textContent = `Check your connection and try again. (${err && err.message ? err.message : err})`;
     $('load-error').hidden = false; $('result-count').textContent = 'Archive unavailable';
   }
 }

@@ -2,6 +2,12 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## BUG-002 — 2026-10-14 — "The archive couldn't load" with no reason shown
+
+**What hurt:** Joona saw the archive error on the live site right after the ITER-006 deploy. Not reproducible afterwards; the most likely cause is loading during the ~30 s GitHub Pages rebuild window (posts.json 404s) or a dropped download of the 4.7 MB (1 MB gzipped) archive. The `catch` swallowed the error, so there was nothing to go on.
+
+**Fix:** `load()` now logs the error to the console and shows it in the error panel (`#load-error-detail`), e.g. "posts.json returned HTTP 503". "Try again" refetches with `cache: 'reload'` so a stale or truncated cached archive isn't served back. Asset links bumped to `?v=3`.
+
 ## ITER-006 — 2026-10-14 — Closing quote mark on the homepage plaque
 
 **What hurt:** The plaque had a big decorative opening “ but no closing mark, so the quote looked unbalanced.
