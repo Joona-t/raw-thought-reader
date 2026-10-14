@@ -2,6 +2,10 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## ITER-008 — 2026-10-14 — Plaque: drop the "2005 · 2012" corner label
+
+Joona: with no caption it reads like an age or a lifespan, not the blog's run. Removed from the plaque (`.plaque-years` rule and markup); the archive's years are already stated in the stats strip below the hero. Assets `?v=5`.
+
 ## ITER-007 — 2026-10-14 — Plaque: no quote marks, larger attribution
 
 Joona's call: the decorative “ ” marks (ITER-006) weren't aesthetic. Both removed; top padding reduced to match. The "— Aaron Swartz" line moved to the serif at 19px in `--ink-soft` so it reads as part of the plaque rather than a footnote. Assets bumped to `?v=4`.

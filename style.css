@@ -164,11 +164,6 @@ main { max-width: var(--max); margin: 0 auto; }
 .plaque figcaption { font-family: var(--serif); font-size: 19px; letter-spacing: .02em; color: var(--ink-soft); }
 .plaque figcaption a { color: var(--ink-soft); }
 .plaque figcaption a:hover { color: var(--accent); }
-.plaque-years {
-  position: absolute; right: 28px; bottom: 22px;
-  font-family: var(--serif); font-size: 15px; letter-spacing: .08em; color: var(--muted);
-}
-.plaque-years i { font-style: normal; color: var(--accent); padding: 0 8px; }
 
 /* ---------- collection bar ---------- */
 
@@ -419,8 +414,7 @@ footer {
   .button { gap: 18px; padding: 14px 18px; }
   .plaque { padding: 44px 24px 36px; min-height: 0; }
   .plaque blockquote p { font-size: 23px; }
-  .plaque-years { position: static; display: block; margin-top: 20px; }
-
+  
   .collection-bar { gap: 14px 22px; flex-wrap: wrap; font-size: 11px; padding: 16px 0; }
   .collection-bar .bar-end { margin-left: 0; width: 100%; }
 
