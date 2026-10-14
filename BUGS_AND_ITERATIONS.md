@@ -2,6 +2,10 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## ITER-005 — 2026-10-14 — New homepage quote
+
+Homepage plaque now shows “Be curious. Read widely. Try new things. What people call intelligence just boils down to curiosity.” (Joona's pick). The quote isn't in the Raw Thought archive (searched all 449 posts), so the caption is now a plain “— Aaron Swartz” with no post link, and the `app.js` code that relabelled `#quote-source` from the linked post was removed.
+
 ## ITER-004 — 2026-10-11 — Haiku swarm audit after the image change (135 agents: 10 finders → 2-lens verify → critic)
 
 **Verdict:** 62 raw findings · 42 confirmed by both skeptics · 20 debunked · 20 coverage gaps listed by the critic. Every confirmed P1 and the image-pipeline P2s were re-verified by hand and fixed in this iteration; the rest are logged below as the improvement backlog.
