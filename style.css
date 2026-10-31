@@ -23,7 +23,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {   /* system mode only: named themes (light, dark, Korean) set their own colours */
     --paper: #161a18;
     --paper-deep: #1d2220;
     --wash: #222826;
@@ -54,6 +54,52 @@
   --focus: #d08a66;
   color-scheme: dark;
 }
+
+/* ---------- Korean themes ----------
+   The four Korean themes of the LoveSpark Retro Cursor popup (Seoul Y2K, Gingham Sticker, Holo Mochi,
+   Neon Usagi), the same as lovespark.love/papers. --page-bg is the page background; verify_themes.py
+   checks every text colour against --paper, --paper-deep, --wash and each colour in --page-bg. */
+:root[data-theme="kr-seoul"] {
+  --paper: #fdf9ff; --paper-deep: #ffe8f2; --wash: #e9dcff;
+  --ink: #3a2a3a; --ink-soft: #4e3a50; --muted: #6b4a66; --faint: #6b4a66;
+  --line: #ecd6ec; --line-strong: #c4a8e0;
+  --accent: #a8134f; --accent-soft: #ff8fc6; --focus: #a8134f;
+  --page-bg: linear-gradient(160deg, #dff1ff 0%, #ffe8f2 45%, #fff4d6 78%, #e9dcff 100%);
+  color-scheme: light;
+}
+:root[data-theme="kr-gingham"] {
+  --paper: #fffafc; --paper-deep: #ffe3ee; --wash: #fff3f7;
+  --ink: #2a1824; --ink-soft: #3e2434; --muted: #6e3a57; --faint: #6e3a57;
+  --line: #f0c3d5; --line-strong: #2a1824;
+  --accent: #b0124f; --accent-soft: #ff4f9a; --focus: #b0124f;
+  --page-bg: linear-gradient(#fff3f7, #fff3f7);
+  color-scheme: light;
+}
+:root[data-theme="kr-holo"] {
+  --paper: #faf7ff; --paper-deep: #f3ebff; --wash: #e9d5ff;
+  --ink: #2b1b4a; --ink-soft: #3d2c63; --muted: #54447a; --faint: #54447a;
+  --line: #e3d6f7; --line-strong: #c7b2ee;
+  --accent: #6d35d8; --accent-soft: #9b6cf0; --focus: #6d35d8;
+  --page-bg: radial-gradient(60% 45% at 12% 8%, #ffd1ea 0%, transparent 70%), radial-gradient(55% 40% at 92% 18%, #cfe6ff 0%, transparent 70%), radial-gradient(60% 50% at 80% 88%, #c8f7e1 0%, transparent 72%), radial-gradient(55% 45% at 10% 80%, #ffd8c2 0%, transparent 70%), linear-gradient(#efe4ff, #efe4ff);
+  color-scheme: light;
+}
+:root[data-theme="kr-neon"] {
+  --paper: #120b18; --paper-deep: #1e1030; --wash: #2a1740;
+  --ink: #f3eaf2; --ink-soft: #e4d5ea; --muted: #c9b3dc; --faint: #c9b3dc;
+  --line: #2e1a40; --line-strong: #7d2a8e;
+  --accent: #ff46d6; --accent-soft: #b0139a; --focus: #ff8ae6;
+  --page-bg: radial-gradient(80% 50% at 50% -10%, #3e1a40 0%, transparent 70%), radial-gradient(70% 45% at 100% 110%, #3a0f50 0%, transparent 70%), linear-gradient(#120b18, #120b18);
+  color-scheme: dark;
+}
+:root[data-theme^="kr-"] body { background-image: var(--page-bg); background-attachment: fixed; }
+/* each theme's signature from the popup: Seoul's lilac offset shadow, Gingham's inked sticker card
+   (the gingham pattern only as a top band, never behind text), Holo's rounded glass, Neon's glow */
+:root[data-theme="kr-seoul"] :is(.plaque, .start-card) { border-color: #c4a8e0; box-shadow: 3px 3px 0 #c4a8e0; }
+:root[data-theme="kr-gingham"] :is(.plaque, .start-card) { border: 2px solid #2a1824; box-shadow: 3px 3px 0 #2a1824; border-radius: 14px; }
+:root[data-theme="kr-gingham"] body::before { content: ""; position: fixed; inset: 0 0 auto 0; height: 10px; z-index: 60; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(246, 166, 196, .6) 0 5px, transparent 5px 10px), repeating-linear-gradient(90deg, rgba(246, 166, 196, .6) 0 5px, transparent 5px 10px), #fff3f7; }
+:root[data-theme="kr-holo"] :is(.plaque, .start-card) { border-radius: 22px; border-color: rgba(255, 255, 255, .85); background: rgba(255, 255, 255, .62); box-shadow: 0 10px 28px rgba(140, 100, 230, .18); }
+:root[data-theme="kr-neon"] :is(.plaque, .start-card) { border-color: rgba(255, 70, 214, .45); border-radius: 16px; box-shadow: 0 0 0 1px rgba(255, 70, 214, .35), 0 0 18px rgba(255, 70, 214, .25); }
 
 /* ---------- base ---------- */
 
@@ -116,11 +162,35 @@ i, em { font-style: italic; }
 .topnav { display: flex; align-items: center; gap: 26px; font-size: 13px; }
 .topnav a { text-decoration: none; color: var(--ink-soft); }
 .topnav a:hover { color: var(--accent); }
-#theme-toggle {
-  width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center; font-size: 17px; color: var(--muted);
+/* Change Theme: a dropdown, top right, opens downward (LoveSpark rule) */
+.theme-picker { position: relative; }
+#theme-btn {
+  min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-soft);
 }
-#theme-toggle:hover { border-color: var(--line-strong); color: var(--ink); }
+#theme-btn:hover, #theme-btn[aria-expanded="true"] { border-color: var(--line-strong); color: var(--ink); }
+#theme-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 100; min-width: 248px; padding: 10px;
+  max-height: calc(100vh - 110px); overflow-y: auto; overscroll-behavior: contain;
+  background: var(--paper); border: 1px solid var(--line-strong); box-shadow: 0 12px 32px rgba(0, 0, 0, .14);
+}
+#theme-menu .menu-label { margin: 6px 8px; font-size: 10.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+#theme-menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 36px; padding: 6px 8px;
+  text-align: left; font-size: 13.5px; color: var(--ink); white-space: nowrap;
+}
+#theme-menu button:hover, #theme-menu button[aria-checked="true"] { background: var(--paper-deep); }
+#theme-menu button[aria-checked="true"]::after { content: "✓"; margin-left: 8px; color: var(--accent); }
+#theme-menu .ko { margin-left: auto; padding-left: 12px; font-size: 12px; color: var(--muted); }
+#theme-menu button:not(:has(.ko))[aria-checked="true"]::after { margin-left: auto; }
+.swatch { width: 14px; height: 14px; border-radius: 50%; flex: none; border: 1px solid var(--line-strong); }
+.swatch--system { background: linear-gradient(135deg, #f3eee4 50%, #161a18 50%); }
+.swatch--light { background: linear-gradient(135deg, #f3eee4 50%, #9c4a2b 50%); }
+.swatch--dark { background: linear-gradient(135deg, #161a18 50%, #d08a66 50%); }
+.swatch--kr-seoul { background: linear-gradient(135deg, #dff1ff 50%, #ff5baa 50%); }
+.swatch--kr-gingham { background: linear-gradient(135deg, #fff3f7 50%, #f6a6c4 50%); }
+.swatch--kr-holo { background: linear-gradient(135deg, #efe4ff 50%, #9b6cf0 50%); }
+.swatch--kr-neon { background: linear-gradient(135deg, #120b18 50%, #ff46d6 50%); }
 
 main { max-width: var(--max); margin: 0 auto; }
 
@@ -405,7 +475,9 @@ footer {
   .topnav { gap: 14px; font-size: 12px; }
   .topnav a { white-space: nowrap; }
   .topnav a:nth-child(2), .topnav a:nth-child(4) { display: none; }
-  #theme-toggle { width: 32px; height: 32px; font-size: 15px; }
+  #theme-btn { min-height: 32px; padding: 0 10px; }
+  .theme-btn-text { display: none; }   /* icon only on phones; the aria-label still says Change Theme */
+  #theme-menu { max-width: calc(100vw - 24px); }
 
   .hero { grid-template-columns: 1fr; padding: 48px var(--gutter) 40px; gap: 36px; }
   .hero h1 { font-size: clamp(64px, 19vw, 84px); margin: 18px 0 18px; }

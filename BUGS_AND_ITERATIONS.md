@@ -2,6 +2,15 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## ITER-009 — 2026-10-31 — Korean themes and a Change Theme menu
+
+- **Ask (Joona):** bring the Korean themes to this page, the same four as lovespark.love/papers: Seoul Y2K 서울, Gingham Sticker 깅엄, Holo Mochi 모찌 and Neon Usagi 네온 from the LoveSpark Retro Cursor popup.
+- **Menu:** the ◐ light/dark toggle is now a "Change Theme" dropdown, top right, opening downward. It offers Match my device (the old default), Light, Dark and the four Korean themes. It closes on Esc or an outside click. On phones the button is icon-only and keeps its aria-label. Swatches are CSS classes because the CSP blocks inline styles.
+- **Themes:** each theme sets the existing tokens plus a page background (`--page-bg`) and its popup signature on the plaque and the Start-here cards: Seoul's lilac offset shadow, Gingham's inked sticker card with a gingham top band (no text on the pattern), Holo's rounded glass, Neon's glow.
+- **Fix on the way:** the system dark-mode rule was `:root:not([data-theme="light"])`, so on a dark-mode device it also matched every Korean theme. It is now `:root:not([data-theme])`, which means system mode only.
+- **Saved choice:** an unknown saved theme falls back to Match my device.
+- **Verify:** `verify_themes.py` (new) checks 140 text/background pairs, gradient stops included; all are ≥ 4.5:1, and it exits 1 when Seoul's raw #ff5baa accent is swapped in. In the browser, the rendered audit had 0 failures in all 4 themes on the home page (315 pairs each) and in a post (56 pairs each). No horizontal scroll at 320px; the menu stays on screen; targets are ≥ 32px; the theme survives a reload; no console errors. `verify_content.py` was not run: it needs lxml, which isn't installed here, and no content changed.
+
 ## ITER-008 — 2026-10-14 — Plaque: drop the "2005 · 2012" corner label
 
 Joona: with no caption it reads like an age or a lifespan, not the blog's run. Removed from the plaque (`.plaque-years` rule and markup); the archive's years are already stated in the stats strip below the hero. Assets `?v=5`.

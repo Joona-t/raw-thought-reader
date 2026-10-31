@@ -28,13 +28,14 @@ const START_HERE = [
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 let posts = [], filtered = [], selectedYear = 'all', savedOnly = false, shown = PAGE_SIZE;
+const THEMES = ['light', 'dark', 'kr-seoul', 'kr-gingham', 'kr-holo', 'kr-neon'];
 let currentPost = null, archiveScroll = 0, saved = new Set(), lastRead = null, theme = null;
 
 try {
   const value = JSON.parse(localStorage.getItem(STORE) || '{}');
   saved = new Set(Array.isArray(value.saved) ? value.saved.filter(v => typeof v === 'string') : []);
   lastRead = typeof value.lastRead === 'string' ? value.lastRead : null;
-  theme = value.theme === 'dark' || value.theme === 'light' ? value.theme : null;
+  theme = THEMES.includes(value.theme) ? value.theme : null;   // unknown or missing: match the device
 } catch { /* Reading remains available when storage is disabled. */ }
 
 function persist() {
@@ -43,18 +44,28 @@ function persist() {
 
 /* ---------- theme ---------- */
 
-function systemDark() { return window.matchMedia('(prefers-color-scheme: dark)').matches; }
+// null = match the device's light/dark setting. Korean themes: the Retro Cursor popup's four.
+const themeBtn = $('theme-btn'), themeMenu = $('theme-menu');
 function applyTheme() {
   if (theme) document.documentElement.setAttribute('data-theme', theme);
   else document.documentElement.removeAttribute('data-theme');
-  const dark = theme ? theme === 'dark' : systemDark();
-  $('theme-toggle').setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  themeMenu.querySelectorAll('[data-theme]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.theme === (theme || ''))));
 }
-$('theme-toggle').addEventListener('click', () => {
-  const dark = theme ? theme === 'dark' : systemDark();
-  theme = dark ? 'light' : 'dark';
+function openThemeMenu(open) {
+  themeMenu.hidden = !open;
+  themeBtn.setAttribute('aria-expanded', String(open));
+  if (open) (themeMenu.querySelector('[aria-checked="true"]') || themeMenu.querySelector('button')).focus();
+}
+themeBtn.addEventListener('click', e => { e.stopPropagation(); openThemeMenu(themeMenu.hidden); });
+themeMenu.addEventListener('click', e => {
+  e.stopPropagation();
+  const b = e.target.closest('[data-theme]');
+  if (!b) return;
+  theme = b.dataset.theme || null;
   persist(); applyTheme();
 });
+document.addEventListener('click', () => { if (!themeMenu.hidden) openThemeMenu(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !themeMenu.hidden) { openThemeMenu(false); themeBtn.focus(); } });
 applyTheme();
 
 /* ---------- helpers ---------- */

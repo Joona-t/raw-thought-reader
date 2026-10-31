@@ -31,7 +31,15 @@
       <a href="#start-here">Start here</a>
       <a href="#aaron">About Aaron</a>
       <a href="#credits">Credits</a>
-      <button id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme"><span aria-hidden="true">◐</span></button>
+      <div class="theme-picker">
+        <button id="theme-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="theme-menu" aria-label="Change Theme"><span aria-hidden="true">◐</span><span class="theme-btn-text">Change Theme</span></button>
+        <div id="theme-menu" role="menu" aria-label="Theme" hidden>
+          <p class="menu-label">Theme</p>
+          <button type="button" role="menuitemradio" aria-checked="false" data-theme=""><span class="swatch swatch--system" aria-hidden="true"></span>Match my device</button><button type="button" role="menuitemradio" aria-checked="false" data-theme="light"><span class="swatch swatch--light" aria-hidden="true"></span>Light</button><button type="button" role="menuitemradio" aria-checked="false" data-theme="dark"><span class="swatch swatch--dark" aria-hidden="true"></span>Dark</button>
+          <p class="menu-label">Korean</p>
+          <button type="button" role="menuitemradio" aria-checked="false" data-theme="kr-seoul"><span class="swatch swatch--kr-seoul" aria-hidden="true"></span>Seoul Y2K<span class="ko" lang="ko">서울</span></button><button type="button" role="menuitemradio" aria-checked="false" data-theme="kr-gingham"><span class="swatch swatch--kr-gingham" aria-hidden="true"></span>Gingham Sticker<span class="ko" lang="ko">깅엄</span></button><button type="button" role="menuitemradio" aria-checked="false" data-theme="kr-holo"><span class="swatch swatch--kr-holo" aria-hidden="true"></span>Holo Mochi<span class="ko" lang="ko">모찌</span></button><button type="button" role="menuitemradio" aria-checked="false" data-theme="kr-neon"><span class="swatch swatch--kr-neon" aria-hidden="true"></span>Neon Usagi<span class="ko" lang="ko">네온</span></button>
+        </div>
+      </div>
     </nav>
   </header>
 
