@@ -29,17 +29,19 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 let posts = [], filtered = [], selectedYear = 'all', savedOnly = false, shown = PAGE_SIZE;
 const THEMES = ['light', 'dark', 'kr-seoul', 'kr-gingham', 'kr-holo', 'kr-neon'];
-let currentPost = null, archiveScroll = 0, saved = new Set(), lastRead = null, theme = null;
+const FONTS = ['serif', 'sans', 'dyslexic', 'lexend', 'comfortaa', 'atkinson'];   // serif = the default
+let currentPost = null, archiveScroll = 0, saved = new Set(), lastRead = null, theme = null, font = 'serif';
 
 try {
   const value = JSON.parse(localStorage.getItem(STORE) || '{}');
   saved = new Set(Array.isArray(value.saved) ? value.saved.filter(v => typeof v === 'string') : []);
   lastRead = typeof value.lastRead === 'string' ? value.lastRead : null;
   theme = THEMES.includes(value.theme) ? value.theme : null;   // unknown or missing: match the device
+  font = FONTS.includes(value.font) ? value.font : 'serif';
 } catch { /* Reading remains available when storage is disabled. */ }
 
 function persist() {
-  try { localStorage.setItem(STORE, JSON.stringify({saved: [...saved], lastRead, theme})); } catch { /* Private/limited storage. */ }
+  try { localStorage.setItem(STORE, JSON.stringify({saved: [...saved], lastRead, theme, font})); } catch { /* Private/limited storage. */ }
 }
 
 /* ---------- theme ---------- */
@@ -50,6 +52,9 @@ function applyTheme() {
   if (theme) document.documentElement.setAttribute('data-theme', theme);
   else document.documentElement.removeAttribute('data-theme');
   themeMenu.querySelectorAll('[data-theme]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.theme === (theme || ''))));
+  if (font === 'serif') document.documentElement.removeAttribute('data-font');
+  else document.documentElement.setAttribute('data-font', font);
+  themeMenu.querySelectorAll('[data-font]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.font === font)));
 }
 function openThemeMenu(open) {
   themeMenu.hidden = !open;
@@ -59,9 +64,12 @@ function openThemeMenu(open) {
 themeBtn.addEventListener('click', e => { e.stopPropagation(); openThemeMenu(themeMenu.hidden); });
 themeMenu.addEventListener('click', e => {
   e.stopPropagation();
-  const b = e.target.closest('[data-theme]');
-  if (!b) return;
-  theme = b.dataset.theme || null;
+  // only the menu's own buttons: <html> carries data-theme/data-font too, so closest() alone would match it
+  const b = e.target.closest('button');
+  if (!b || !themeMenu.contains(b)) return;
+  if ('font' in b.dataset) font = b.dataset.font;
+  else if ('theme' in b.dataset) theme = b.dataset.theme || null;
+  else return;
   persist(); applyTheme();
 });
 document.addEventListener('click', () => { if (!themeMenu.hidden) openThemeMenu(false); });
