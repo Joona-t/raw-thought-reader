@@ -2,6 +2,14 @@
 
 Running log of every defect found and every iteration landed. Newest first.
 
+## ITER-010 — 2026-10-31 — Reading fonts in the menu
+
+- **Ask (Joona):** offer the same fonts as lovespark.love/papers. The menu, now "Change Font & Theme", has a Reading font group: Serif (the default), Sans, OpenDyslexic, Lexend, Comfortaa and Atkinson Hyperlegible. The choice is saved alongside the theme.
+- **How:** `data-font` retargets `--serif` (reading text and headings). OpenDyslexic also takes `--sans` (labels). Fonts are self-hosted in `fonts/` because the CSP allows nothing else (OpenDyslexic `.otf`, the rest `.woff2`, all SIL OFL 1.1). Wide faces get a smaller body size in posts (17.5px). Previews in the menu use CSS classes because the CSP blocks inline styles.
+- **Bug caught in testing (BUG-003):** the menu's click handler used `closest('[data-font]')`, and once a font is set `<html>` carries `data-font` too, so clicking a theme button was read as a font click and the theme never changed. The handler now acts only on the menu's own buttons. The live ITER-009 menu didn't have this (themes only).
+- **Layout:** at 820px the long label and OpenDyslexic wrapped the nav onto three lines. Nav items no longer wrap, and the button shows its icon only below 1100px (its aria-label keeps the name).
+- **Verify:** every font applies and loads under the CSP; theme and font combine in any order; both survive a reload; no console errors in a fresh tab. No overflow for 7 themes × 6 fonts at 320px, nor at 375, 820, 1101 or 1280px, and nothing in the top bar wraps. The menu scrolls inside a 640px screen. `verify_themes.py` passes (140 pairs). Assets `?v=7`.
+
 ## ITER-009 — 2026-10-31 — Korean themes and a Change Theme menu
 
 - **Ask (Joona):** bring the Korean themes to this page, the same four as lovespark.love/papers: Seoul Y2K 서울, Gingham Sticker 깅엄, Holo Mochi 모찌 and Neon Usagi 네온 from the LoveSpark Retro Cursor popup.
