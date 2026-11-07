@@ -19,6 +19,10 @@ Running log of every defect found and every iteration landed. Newest first.
 - **Saved choice:** an unknown saved theme falls back to Match my device.
 - **Verify:** `verify_themes.py` (new) checks 140 text/background pairs, gradient stops included; all are ≥ 4.5:1, and it exits 1 when Seoul's raw #ff5baa accent is swapped in. In the browser, the rendered audit had 0 failures in all 4 themes on the home page (315 pairs each) and in a post (56 pairs each). No horizontal scroll at 320px; the menu stays on screen; targets are ≥ 32px; the theme survives a reload; no console errors. `verify_content.py` was not run: it needs lxml, which isn't installed here, and no content changed. Assets `?v=6` so returning visitors can't pair the new HTML with a cached old app.js (which would fail on the removed #theme-toggle).
 
+## ITER-009 — 2026-11-08 — Say up front why this archive exists; correct the outage wording
+
+Joona asked for the outage date and the reason for the archive at the top of the page. New `.hero-note` under the hero intro: aaronsw.com's registration expired on September 29, 2026, Raw Thought went offline, and that's why the archive was built. While checking, found the domain was renewed on 2026-10-11 (whois: expiry 2027-09-29) and `aaronsw.com/weblog/` serves the real blog again (checked 2026-11-08), so the hero note, the credits paragraph and the README no longer claim it's a parking page. Note contrast 6.30:1 dark / 5.34:1 light. Assets `?v=6`.
+
 ## ITER-008 — 2026-10-14 — Plaque: drop the "2005 · 2012" corner label
 
 Joona: with no caption it reads like an age or a lifespan, not the blog's run. Removed from the plaque (`.plaque-years` rule and markup); the archive's years are already stated in the stats strip below the hero. Assets `?v=5`.
