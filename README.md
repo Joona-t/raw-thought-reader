@@ -6,7 +6,7 @@ Live site: https://lovespark.love/raw-thought-reader/
 
 ## Why this exists
 
-The original blog lived at aaronsw.com. Its registration expired on September 29, 2026, and the address now shows a registrar parking page. Nine days after Aaron's death in January 2013, Josh Leitzel had scraped every post and published them on GitHub as [joshleitzel/rawthought](https://github.com/joshleitzel/rawthought), his contribution to the #pdftribute movement. This site is built entirely from that archive, at snapshot `b01e000f42abbac7b616bc8f8bd56522d1f4c46a`.
+The original blog lived at aaronsw.com. Its registration expired on September 29, 2026, and the address showed a registrar parking page until the domain was renewed on October 11, 2026; the original blog is back online as of November 8, 2026. That outage is why this archive was built. Nine days after Aaron's death in January 2013, Josh Leitzel had scraped every post and published them on GitHub as [joshleitzel/rawthought](https://github.com/joshleitzel/rawthought), his contribution to the #pdftribute movement. This site is built entirely from that archive, at snapshot `b01e000f42abbac7b616bc8f8bd56522d1f4c46a`.
 
 449 posts, May 2005 through November 2012. That is the set of posts in the archive, not a claim to contain everything Aaron ever wrote. Same-day entries use archive filename order because timestamps are unavailable.
 

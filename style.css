@@ -239,6 +239,7 @@ main { max-width: var(--max); margin: 0 auto; }
 }
 .hero-dates { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink-soft); margin: 0 0 22px; }
 .hero-description { font-size: 17px; line-height: 1.7; max-width: 470px; color: var(--ink-soft); margin: 0; }
+.hero-note { font-size: 15px; line-height: 1.65; max-width: 470px; color: var(--muted); margin: 16px 0 0; padding-left: 14px; border-left: 2px solid var(--accent); }
 .hero-actions { display: flex; align-items: center; gap: 24px; margin-top: 34px; flex-wrap: wrap; }
 .button {
   display: inline-flex; align-items: center; gap: 28px;
@@ -515,6 +516,7 @@ footer {
   .hero h1 { font-size: clamp(64px, 19vw, 84px); margin: 18px 0 18px; }
   .hero-dates { font-size: 17px; }
   .hero-description { font-size: 15.5px; }
+  .hero-note { font-size: 14.5px; }
   .button { gap: 18px; padding: 14px 18px; }
   .plaque { padding: 44px 24px 36px; min-height: 0; }
   .plaque blockquote p { font-size: 23px; }
