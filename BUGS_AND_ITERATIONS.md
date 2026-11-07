@@ -10,6 +10,10 @@ Running log of every defect found and every iteration landed. Newest first.
 - **Layout:** at 820px the long label and OpenDyslexic wrapped the nav onto three lines. Nav items no longer wrap, and the button shows its icon only below 1100px (its aria-label keeps the name).
 - **Verify:** every font applies and loads under the CSP; theme and font combine in any order; both survive a reload; no console errors in a fresh tab. No overflow for 7 themes × 6 fonts at 320px, nor at 375, 820, 1101 or 1280px, and nothing in the top bar wraps. The menu scrolls inside a 640px screen. `verify_themes.py` passes (140 pairs). Assets `?v=7`.
 
+## ITER-010 — 2026-11-08 — Calmer hero note, with where to get a copy
+
+Joona felt "there's no telling how long it will stay that way" was too dramatic. The note now says the outage is what inspired the site, that he'll keep the archive up, and that anyone can get their own copy from this site's GitHub source or from Josh Leitzel's archive (joshleitzel/rawthought). Both repos confirmed public. Assets `?v=7`.
+
 ## ITER-009 — 2026-10-31 — Korean themes and a Change Theme menu
 
 - **Ask (Joona):** bring the Korean themes to this page, the same four as lovespark.love/papers: Seoul Y2K 서울, Gingham Sticker 깅엄, Holo Mochi 모찌 and Neon Usagi 네온 from the LoveSpark Retro Cursor popup.
